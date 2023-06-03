@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CocktailService {
@@ -19,6 +20,10 @@ public class CocktailService {
     public List<Cocktail> getCocktails()
     {
         return respository.findAll();
+    }
+    public Optional<Cocktail> getCocktail(Long id)
+    {
+        return respository.findById(id);
     }
     public void addNewCocktail(Cocktail cocktail)
     {

@@ -1,29 +1,28 @@
 package com.example.verylastapi.classes;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.hibernate.annotations.Columns;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table
+@Table(name="Cocktails")
 public class Cocktail
 {
 
     @jakarta.persistence.Id
     @Id
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "student_sequence"
+            strategy = GenerationType.SEQUENCE
     )
-    private Long id;
+    private int id;
     private String name;
+    @Column(length = 400000000)
     private String description;
-    private String ingredients;
-
+    private String imageUrl;
     public String getName() {
         return name;
     }
@@ -31,11 +30,11 @@ public class Cocktail
     public void setName(String name) {
         this.name = name;
     }
-    public Long getId() {
-        return id;
+    public int getId() {
+        return this.id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -47,29 +46,26 @@ public class Cocktail
         this.description = description;
     }
 
-    public String getIngredients() {
-        return ingredients;
-    }
-
-    public void setIngredients(String ingredients) {
-        this.ingredients = ingredients;
-    }
-
     public Cocktail() {
     }
-    public Cocktail(Long id, String name, String description, String ingredients)
+    public Cocktail(int id, String name, String description)
     {
         this.id=id;
         this.description=description;
-        this.ingredients=ingredients;
         this.name=name;
     }
 
-    public Cocktail(String name, String description, String ingredients)
+    public Cocktail(String name, String description, String imageUrl, Set<Ingredients> ingredients)
     {
+        this.imageUrl=imageUrl;
         this.description=description;
-        this.ingredients=ingredients;
         this.name=name;}
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
 
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 };
