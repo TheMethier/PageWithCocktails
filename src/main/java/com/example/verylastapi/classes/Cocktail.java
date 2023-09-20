@@ -13,6 +13,7 @@ import java.util.Set;
 public class Cocktail
 {
 
+
     @jakarta.persistence.Id
     @Id
     @GeneratedValue(
@@ -23,6 +24,9 @@ public class Cocktail
     @Column(length = 400000000)
     private String description;
     private String imageUrl;
+    private String prep;
+    private String tag;
+    //Dodaj Size
     public String getName() {
         return name;
     }
@@ -48,15 +52,18 @@ public class Cocktail
 
     public Cocktail() {
     }
-    public Cocktail(int id, String name, String description)
+    public Cocktail(int id, String name, String description,String prep)
     {
         this.id=id;
         this.description=description;
         this.name=name;
+        this.prep=prep;
     }
 
-    public Cocktail(String name, String description, String imageUrl, Set<Ingredients> ingredients)
+    public Cocktail(String name, String description, String imageUrl, Set<Ingredients> ingredients, String prep, String tag)
     {
+        this.tag=tag;
+        this.prep=prep;
         this.imageUrl=imageUrl;
         this.description=description;
         this.name=name;}
@@ -67,5 +74,21 @@ public class Cocktail
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getPrep() {
+        return prep;
+    }
+
+    public void setPrep(String prep) {
+        this.prep = prep;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 };

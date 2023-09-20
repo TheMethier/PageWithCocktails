@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
 @Service
 public class CocktailService {
     private final CocktailRespository respository;
@@ -42,5 +41,16 @@ public class CocktailService {
 
         }
     }
+
+    public List<Cocktail> getCocktailByTag(String tag) {
+        String formattedTag=new String("%");
+        for (int i=0;i<tag.length();i++){
+            formattedTag+=tag.charAt(i)+"%";
+        }
+        System.out.println(formattedTag);
+        return respository.getByTag(formattedTag);
+    }
+
+   
 //update
 }

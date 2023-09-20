@@ -13,27 +13,34 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 
 public class CocktailController {
-private final CocktailService service;
+    private final CocktailService service;
 
-@Autowired
+    @Autowired
     public CocktailController(CocktailService service) {
         this.service = service;
     }
 
-    @GetMapping("/")
+    @GetMapping("/cocktail/")
     public List<Cocktail> GetCocktails()
     {
         return service.getCocktails();
     }
 
+    @GetMapping("/cocktail/{tag}")
+    public List<Cocktail> GetCocktailByTag(@PathVariable ("tag") String tag)
+    {
+        System.out.println(tag);
+        return service.getCocktailByTag(tag);
+    }
+
     @GetMapping("/{id}")
     public Optional<Cocktail> GetCoctailById(@PathVariable ("id") Long Id){
-    return  service.getCocktail(Id);
+        return  service.getCocktail(Id);
     }
+
     @PostMapping("/")
     public void AddNewCocktail(@RequestBody Cocktail cocktail)
     {
-
         service.addNewCocktail(cocktail);
     }
     @DeleteMapping(path="/{id}")
