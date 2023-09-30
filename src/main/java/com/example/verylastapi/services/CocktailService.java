@@ -51,6 +51,6 @@ public class CocktailService {
         return respository.getByTag(formattedTag);
     }
 
-   
+
 //update
 }
