@@ -4,20 +4,31 @@ import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import { AddToDriveSharp, CenterFocusStrong, Description, Height, Route, } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
-import { Grid,Modal,Box, CardHeader, TextField } from '@mui/material';
+import { Grid,Modal,Box, CardHeader, TextField, AppBar } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { forwardRef } from 'react';
 import { Link, useHref } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import CocktailDescription from './CocktailDescription';
 import SendIcon from '@mui/icons-material/Send';
-
-export default function CocktailCard()
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+import Filter from './Filter';
+export default function CocktailCard({tag, search})
 {
+   
     const [loading, setLoading]=useState(true);
     const [cocktails,setCocktails]=useState([]);
     const [name,setName]=useState([]);
@@ -33,32 +44,25 @@ export default function CocktailCard()
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const handleClose1 = () => setOpen1(false);
-
+   
     useEffect(()=>{
-        if(loading){
-        setLoading(true);
-       fetch("http://localhost:8080/api/v1/cocktails/",{method:'GET'})
+       fetch(`http://localhost:8080/api/v1/cocktails/cocktail/${tag}`,{method:'GET'})
         .then((resp)=>resp.json())
         .then((data)=>{
-            console.log(data);
             setCocktails(data);
         })
         .finally(()=>{
             setLoading(false);
         });
-
-    }
-    },[]);
+    },[tag]);
     useEffect(()=>{
         fetch(`http://localhost:8080/api/v1/indi/${cocktails.length}`)
         .then((resp)=>resp.json())
         .then((data)=>{
-            console.log(data);
             setIngredients(data);
         });
 
     },[]);
-
 let navigate=useNavigate();
     function GoToDesc(props)
     {
@@ -103,9 +107,7 @@ let navigate=useNavigate();
    }
    const Submit=()=>
    {
-    
     const text={name: name, description: desc, image_url: url,prep: prep}
-
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -118,6 +120,7 @@ let navigate=useNavigate();
 
 }
 const SubmitC=()=>{
+
     console.log(typeof(quanity));
     const text={quantity: quanity, name: String(dname), unit: String(unit)}
     console.log(JSON.stringify(text))
@@ -128,7 +131,9 @@ const SubmitC=()=>{
       type: "no-cors"
   };
   fetch(`http://localhost:8080/api/v1/indi/${cocktails.length}`,requestOptions);
-  alert(`Dodano składnik: ${text.quantity} ${text.unit} ${text.name}  do drinka !`)
+  setLoading(false);
+  alert(`Dodano składnik: ${text.quantity} ${text.unit} ${text.name}  do drinka !`);
+  setLoading(true);
 }
 const SubmitFinal=()=>{
   setOpen1(false);
@@ -298,7 +303,7 @@ sx={{ height: 250 }}
 </CardActions>
     </Card>
         
-        {cocktails.map((x)=>(
+        {cocktails.filter(x=>{return search==""?x:String(x.name).toLowerCase().includes(String(search).toLowerCase());}).map((x)=>(
         
 <div>
     <Card key={x.id} className='card'  sx={{width:250,

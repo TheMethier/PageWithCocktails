@@ -83,6 +83,7 @@ build/
 
 ### VS Code ###
 .vscode/
+.vs/
 ### React ##
 .DS_STORE
 node_modules

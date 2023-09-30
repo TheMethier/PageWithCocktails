@@ -7,9 +7,10 @@ import { CardHeader, Grid, Card,CardContent, Accordion,AccordionSummary,Accordio
 import { useLocation, useNavigate } from 'react-router-dom';
 import { dark } from '@mui/material/styles/createPalette';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
+import axios from 'axios';
 export default function CocktailDescription()
 {
+
     const [loading, setLoading]=useState(true);
     const local = useLocation();
     const [cocktail,setCocktail]=useState([]);
@@ -21,7 +22,6 @@ export default function CocktailDescription()
        fetch(`http://localhost:8080/api/v1/cocktails/${p}`)
         .then((resp)=>resp.json())
         .then((data)=>{
-            console.log(data);
             setCocktail(data);
         })
         .finally(()=>{
@@ -29,16 +29,15 @@ export default function CocktailDescription()
         });
         console.log(cocktail.prep)
     }
-    },[]);
+    },[loading]);
     useEffect(()=>{
         fetch(`http://localhost:8080/api/v1/indi/${p}`)
         .then((resp)=>resp.json())
         .then((data)=>{
-            console.log(data);
             setIngredients(data);
         });
 
-    },[]);
+    },[loading]);
     return(<div>
         <Grid container spacing={1} sx={{alignContent:"center",paddingLeft:40,paddingTop:2}}>
              <Grid container item spacing={1}>
