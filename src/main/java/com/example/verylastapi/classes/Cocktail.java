@@ -1,19 +1,12 @@
 package com.example.verylastapi.classes;
 import jakarta.persistence.*;
-import org.hibernate.annotations.Columns;
 import org.springframework.data.annotation.Id;
-
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name="Cocktails")
 public class Cocktail
 {
-
-
     @jakarta.persistence.Id
     @Id
     @GeneratedValue(
@@ -91,4 +84,4 @@ public class Cocktail
     public void setTag(String tag) {
         this.tag = tag;
     }
-};
+}

@@ -23,4 +23,11 @@ public class IngredientController {
     public List<Ingredients> GetIndiById(@PathVariable("id") Long Id){
         return  service.GetAllIngredients(Id);
     }
+
+
+    @PostMapping("/{id}")
+    public void addNewIngredients(@RequestBody(required = true) Ingredients Ingredients,@PathVariable("id") int id)
+    {
+        service.addNewIngredients(Ingredients,id);
+    }
 }
