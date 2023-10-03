@@ -30,6 +30,13 @@ private final LogoutHandler logoutHandler;
                 .authorizeHttpRequests(x->x.requestMatchers("/api/v1/auth/register","/api/v1/auth/authenticate","","/api/v1/indi/**").permitAll().anyRequest().authenticated())
                 .sessionManagement(x->x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .logout(x->{
+                    x.addLogoutHandler(logoutHandler);
+                    x.logoutUrl("/api/v1/auth/logout");//it generate logout endpoint
+                    x.logoutSuccessHandler((request, response, authentication)-> {// when logout is successful, we clean a ContextHolder
+                        SecurityContextHolder.clearContext();
+                    });
+                });
         return http.build();
     }
 }

@@ -57,4 +57,13 @@ public class AuthenticationService {
         tokenRespository.save(token);
         return  AuthenticationResponse.builder().token(jwt).build();
     }
+    public void revokeAllUserTokens(User user)
+    {
+        List<Token> valid=tokenRespository.findAllValidTokensFromUser(user.getId());
+        if(valid.isEmpty())
+        {return;
+       }
+       valid.forEach(token -> {token.setRevoked(true); token.setExpired(true);});
+        tokenRespository.saveAll(valid);
+   }
 }

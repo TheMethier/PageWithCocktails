@@ -32,6 +32,8 @@ public class User implements UserDetails {
     private  String email;
     private String phoneNumber;
     private Role role;
+    @OneToMany(mappedBy = "user")
+    private List<Token> Tokens;
 
     //GetUsername and GetPassword from UserDetails is implemented by @Data in generated getter
   @Override
