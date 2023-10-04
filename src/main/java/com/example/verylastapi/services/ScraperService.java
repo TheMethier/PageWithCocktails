@@ -1,12 +1,11 @@
 package com.example.verylastapi.services;
 import com.example.verylastapi.classes.Cocktail;
-import com.example.verylastapi.classes.Ingredients;
+import com.example.verylastapi.classes.Ingredient;
 import  org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.awt.image.TileObserver;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -41,8 +40,6 @@ public class ScraperService {
                     u++;
                     for (Element tit :
                             titles) {
-
-
                         nameo = (tit.text().replace(" – Przepis Na Drink", "").replace(" – przepis na drink", "").replace(" – Przepis na Drink", ""));
                     }
                     Elements descAndpre = pages.getElementsByClass("tdb-block-inner td-fix-index");
@@ -50,7 +47,7 @@ public class ScraperService {
                             descAndpre) {
                         if (!desc.getElementsByTag("p").isEmpty()) {
                             description = (desc.getElementsByTag("p").first().text());
-                            Set<Ingredients> Indi = new HashSet<>();
+                            Set<Ingredient> Indi = new HashSet<>();
                             Cocktail cocktail = new Cocktail(nameo, description, "", Indi, "Wszystkie składniki wstrząśnij w szejkerze z lodem i odcedź do schłodzonego szkła.\n", "");
                             String Url = url.remove(0);
                             cocktail.setImageUrl(Url);
@@ -59,7 +56,6 @@ public class ScraperService {
                         }
 
                     }
-            
                 }
                 System.out.println("Complete "+i+" !");
                 i=7;
@@ -71,8 +67,8 @@ public class ScraperService {
         }
         return list;
     }
-    public List<Ingredients> ScrapMyI(List<Cocktail> cocktails) throws IOException {
-        List<Ingredients> list=new ArrayList<>();
+    public List<Ingredient> ScrapMyI(List<Cocktail> cocktails) throws IOException {
+        List<Ingredient> list=new ArrayList<>();
         try {
             int i=-1;
             for(int a=1;a<6;a++)
@@ -135,7 +131,7 @@ public class ScraperService {
                                     alktag += "r";
                                 }
                                 System.out.println(i);
-                                Ingredients p = new Ingredients(cocktails.get(i), name, quantity, unit);
+                                Ingredient p = new Ingredient(cocktails.get(i), name, quantity, unit);
                                 list.add(p);
                             }
                             if(capacity<=50)

@@ -53,7 +53,7 @@ public class Cocktail
         this.prep=prep;
     }
 
-    public Cocktail(String name, String description, String imageUrl, Set<Ingredients> ingredients, String prep, String tag)
+    public Cocktail(String name, String description, String imageUrl, Set<Ingredient> ingredients, String prep, String tag)
     {
         this.tag=tag;
         this.prep=prep;

@@ -1,12 +1,11 @@
 package com.example.verylastapi.config;
 
 import com.example.verylastapi.classes.Cocktail;
-import com.example.verylastapi.classes.Ingredients;
+import com.example.verylastapi.classes.Ingredient;
 import com.example.verylastapi.services.ScraperService;
 import com.example.verylastapi.respositories.CocktailRespository;
 import com.example.verylastapi.respositories.IngredientRespository;
 import com.example.verylastapi.respositories.UserRespository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -39,7 +38,7 @@ public class ApplicationConfiguration {
             cocktailRespository.saveAll(List.of(w));
 */
                 List<Cocktail> cocktails=scraperController.ScrapMyCocktail();
-                List<Ingredients> ingredients=scraperController.ScrapMyI(cocktails);
+                List<Ingredient> ingredients=scraperController.ScrapMyI(cocktails);
                 cocktailRespository.saveAll(cocktails);
                 ingredientRespository.saveAll(ingredients);
 

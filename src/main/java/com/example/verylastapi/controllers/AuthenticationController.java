@@ -1,16 +1,11 @@
 package com.example.verylastapi.controllers;
 
-import com.example.verylastapi.classes.AuthenticationRequest;
-import com.example.verylastapi.classes.AuthenticationResponse;
-import com.example.verylastapi.classes.RegisterRequest;
+import com.example.verylastapi.classes.requests.AuthenticationRequest;
+import com.example.verylastapi.classes.responses.AuthenticationResponse;
+import com.example.verylastapi.classes.requests.RegisterRequest;
 import com.example.verylastapi.services.AuthenticationService;
-import jakarta.persistence.Entity;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.function.EntityResponse;
 
 @RestController
 @RequiredArgsConstructor

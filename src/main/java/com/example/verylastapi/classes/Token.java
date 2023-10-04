@@ -1,12 +1,11 @@
 package com.example.verylastapi.classes;
 
+import com.example.verylastapi.enums.TokenType;
 import jakarta.persistence.*;
-import jdk.jfr.BooleanFlag;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.BooleanString;
 
 @Data
 @Builder

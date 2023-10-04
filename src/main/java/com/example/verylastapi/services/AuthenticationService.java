@@ -1,14 +1,16 @@
 package com.example.verylastapi.services;
 
 import com.example.verylastapi.classes.*;
+import com.example.verylastapi.classes.requests.AuthenticationRequest;
+import com.example.verylastapi.classes.requests.RegisterRequest;
+import com.example.verylastapi.classes.responses.AuthenticationResponse;
+import com.example.verylastapi.enums.Role;
+import com.example.verylastapi.enums.TokenType;
 import com.example.verylastapi.respositories.TokenRespository;
 import com.example.verylastapi.respositories.UserRespository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
