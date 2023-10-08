@@ -19,7 +19,7 @@ public class IngredientRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne()
-    @JoinColumn(name="RequestId",nullable=false)
+    @JoinColumn(name="requestId",nullable=false)
     private CocktailRequest cocktail;
     private String name;
     private Float quantity;

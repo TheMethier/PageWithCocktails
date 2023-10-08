@@ -28,7 +28,7 @@ public class Token {
     private boolean isRevoked;
 
     @ManyToOne()
-    @JoinColumn(name = "UserId",nullable = false)
+    @JoinColumn(name = "userId",nullable = false)
     private User user;
 
 

@@ -2,7 +2,7 @@ package com.example.verylastapi.classes.requests;
 
 import com.example.verylastapi.classes.Token;
 import com.example.verylastapi.classes.User;
-import com.example.verylastapi.classes.requests.IngredientRequest;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,11 +28,17 @@ public class CocktailRequest {
     private String imageUrl;
     private String prep;
     private String tag;
+    @JsonIgnore
     @ManyToOne()
+    @JoinColumn(name="tokenId",nullable=false)
     private Token token;
+    @JsonIgnore
     @ManyToOne()
+    @JoinColumn(name="userId",nullable=false)
     private User user;
-    @OneToMany()
+    @OneToMany(mappedBy = "cocktail")
     private List<IngredientRequest> ingredients;
     private boolean isAccepted;
+    private boolean isDeleted;
+    private boolean isInspected;
 }

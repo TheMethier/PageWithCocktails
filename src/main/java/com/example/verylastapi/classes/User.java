@@ -1,6 +1,7 @@
 package com.example.verylastapi.classes;
 
 
+import com.example.verylastapi.classes.requests.CocktailRequest;
 import com.example.verylastapi.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,8 +35,10 @@ public class User implements UserDetails {
     private Role role;
     @OneToMany(mappedBy = "user")
     private List<Token> Tokens;
+    @OneToMany(mappedBy = "user")
+    private List<Cocktail> cocktails;
 
-    //GetUsername and GetPassword from UserDetails is implemented by @Data in generated getter
+  //GetUsername and GetPassword from UserDetails is implemented by @Data in generated getter
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return List.of(new SimpleGrantedAuthority((role.name())));

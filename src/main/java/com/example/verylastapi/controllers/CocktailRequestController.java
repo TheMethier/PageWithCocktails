@@ -4,6 +4,7 @@ import com.example.verylastapi.classes.Cocktail;
 import com.example.verylastapi.classes.requests.CocktailRequest;
 import com.example.verylastapi.services.CocktailRequestService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,9 +20,9 @@ import java.util.List;
 public class CocktailRequestController {
     private final CocktailRequestService cocktailRequestService;
     @GetMapping ("{username}/requests/")
-    public List<CocktailRequest> getMyRequests(@PathVariable String username)
+    public ResponseEntity<List<CocktailRequest>> getMyRequests(@PathVariable String username)
     {
-        return cocktailRequestService.getMyRequests(username);
+        return ResponseEntity.ok(cocktailRequestService.getMyRequests(username));
     }
     @GetMapping("{username}/recipe/")
     public List<Cocktail> getMyRecipes(@PathVariable String username)
@@ -29,14 +30,14 @@ public class CocktailRequestController {
         return cocktailRequestService.getMyCocktails(username);
     }
     @PostMapping("{username}/recipe/")
-    public void addNewRecipe(@PathVariable String username, @RequestBody CocktailRequest cocktailRequest)
+    public void addNewRecipe(@PathVariable String username, @RequestBody Cocktail cocktailRequest)
     {
         cocktailRequestService.addNewRecipe(username,cocktailRequest);
     }
-    @DeleteMapping("{username}/recipe/{id}")
-    public void deleteMyRecipe(@PathVariable("username") String username, @PathVariable("id") int id)
+    @DeleteMapping("{username}/request/{id}")
+    public void deleteMyRequest(@PathVariable("username") String username, @PathVariable("id") int id)
     {
-         cocktailRequestService.deleteMyRecipe(username,id);
+         cocktailRequestService.deleteMyRequest(username,id);
     }
 
 

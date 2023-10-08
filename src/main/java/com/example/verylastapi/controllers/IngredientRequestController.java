@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.*;
 public class IngredientRequestController {
     private final IngredientRequestService service;
     @PostMapping("/{id}")
-    public void addNewIngredients(@RequestBody(required = true) IngredientRequest Ingredients, @PathVariable("id") int id)
+    public void addNewIngredient(@RequestBody(required = true) IngredientRequest Ingredients, @PathVariable("id") int id)
     {
-        service.addNewIngredients(Ingredients,id);
+        service.addNewIngredient(Ingredients,id);
     }
 
 }
