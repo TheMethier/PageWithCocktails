@@ -7,16 +7,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 @Service
 public class ScraperService {
-    public List<Cocktail> ScrapMyCocktail() throws IOException {
+    public List<Cocktail> ScrapMyCocktail()  {
         List<Cocktail> list=new ArrayList<>();
         List<String> url=new ArrayList<>();
         try {
@@ -33,12 +29,9 @@ public class ScraperService {
                 for (Element href :
                         hrefs) {
                     String nameo = null;
-                    String description = null;
-                    String r = null;
+                    String description;
                     Document pages = Jsoup.connect(href.children().attr("href")).get();
                     Elements titles = pages.getElementsByClass("tdb-title-text");
-                    int u = 0;
-                    u++;
                     for (Element tit :
                             titles) {
                         nameo = (tit.text().replace(" – Przepis Na Drink", "").replace(" – przepis na drink", "").replace(" – Przepis na Drink", ""));
@@ -47,7 +40,7 @@ public class ScraperService {
                     for (Element desc :
                             descAndpre) {
                         if (!desc.getElementsByTag("p").isEmpty()) {
-                            description = (desc.getElementsByTag("p").first().text());
+                            description = (Objects.requireNonNull(desc.getElementsByTag("p").first()).text());
                             Set<Ingredient> Indi = new HashSet<>();
                             Cocktail cocktail = new Cocktail(nameo, description, "", Indi, "Wszystkie składniki wstrząśnij w szejkerze z lodem i odcedź do schłodzonego szkła.\n", "");
                             String Url = url.remove(0);
@@ -68,7 +61,7 @@ public class ScraperService {
         }
         return list;
     }
-    public List<Ingredient> ScrapMyI(List<Cocktail> cocktails) throws IOException {
+    public List<Ingredient> ScrapMyI(List<Cocktail> cocktails) {
         List<Ingredient> list=new ArrayList<>();
         try {
             int i=-1;
@@ -81,17 +74,16 @@ public class ScraperService {
                         hrefs) {
                     System.out.println(href.children().attr("href"));
                     Document pages = Jsoup.connect(href.children().attr("href")).get();
-                    Elements titles = pages.getElementsByClass("tdb-title-text");
                     Elements descAndpre = pages.getElementsByClass("tdb-block-inner td-fix-index");
                     i++;
                     for (Element desc :
                             descAndpre) {
                         float capacity=0;
-                        String alktag = new String("");//dodaj asercję na więcej wariantów przepisu w jednym artykule
+                        StringBuilder alktag = new StringBuilder();//dodaj asercję na więcej wariantów przepisu w jednym artykule
                         if (!desc.getElementsByTag("li").isEmpty()) {
                             for (Element o : desc.getElementsByTag("li")) {
                                 String name = o.text().replaceAll("ml", "").replaceAll("[0-9]+", "").replaceAll("-", "");
-                                String unit = new String();
+                                String unit;
                                 float quantity = 0;
                                 Pattern pattern = Pattern.compile("[0-9]+");//napraw regex
                                 Matcher matcher = pattern.matcher(o.text());
@@ -114,39 +106,38 @@ public class ScraperService {
                                     }
                                 }
 
-                                if (name.contains("ódk") && !alktag.contains("w")) {
-                                    alktag += "w";
+                                if (name.contains("ódk") && !alktag.toString().contains("w")) {
+                                    alktag.append("w");
                                 }
-                                if ((name.contains("teq") || name.contains("Teq")) && !alktag.contains("t")) {
+                                if ((name.contains("teq") || name.contains("Teq")) && !alktag.toString().contains("t")) {
 
-                                    alktag += "t";
+                                    alktag.append("t");
                                 }
-                                if (name.contains("gin") && !name.contains("ging") && !alktag.contains("g")) {
+                                if (name.contains("gin") && !name.contains("ging") && !alktag.toString().contains("g")) {
 
-                                    alktag += "g";
+                                    alktag.append("g");
                                 }
-                                if (name.contains("wh") && !alktag.contains("h")) {
-                                    alktag += "h";
+                                if (name.contains("wh") && !alktag.toString().contains("h")) {
+                                    alktag.append("h");
                                 }
-                                if (name.contains("rum") && !alktag.contains("r")) {
-                                    alktag += "r";
+                                if (name.contains("rum") && !alktag.toString().contains("r")) {
+                                    alktag.append("r");
                                 }
-                                System.out.println(i);
                                 Ingredient p = new Ingredient(cocktails.get(i), name, quantity, unit);
                                 list.add(p);
                             }
                             if(capacity<=50)
                             {
-                                alktag+="S";
+                                alktag.append("S");
                             }
                             else if(capacity<=120)
                             {
-                                alktag+="M";
+                                alktag.append("M");
                             }
                             else {
-                                alktag+="L";
+                                alktag.append("L");
                             }
-                            cocktails.get(i).setTag(alktag);
+                            cocktails.get(i).setTag(alktag.toString());
                         }
 
                     }

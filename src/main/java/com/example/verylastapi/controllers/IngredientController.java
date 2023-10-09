@@ -24,7 +24,7 @@ public class IngredientController {
 
 
     @PostMapping("/{id}")
-    public void addNewIngredients(@RequestBody(required = true) Ingredient Ingredients, @PathVariable("id") int id)
+    public void addNewIngredients(@RequestBody() Ingredient Ingredients, @PathVariable("id") int id)
     {
         service.addNewIngredients(Ingredients,id);
     }

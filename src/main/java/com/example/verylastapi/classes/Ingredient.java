@@ -26,8 +26,8 @@ public Ingredient()
         this.quantity=quantity;
     }
 
-    public Ingredient(int cockid , String name, Float quantity, String unit) {
-        this.cocktail.setId(cockid);
+    public Ingredient(int cockId , String name, Float quantity, String unit) {
+
         this.name=name;
         this.unit=unit;
         this.quantity=quantity;

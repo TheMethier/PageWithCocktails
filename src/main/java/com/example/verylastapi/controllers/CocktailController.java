@@ -22,33 +22,33 @@ private final CocktailService service;
     }
 
     @GetMapping("/cocktail/")
-    public List<Cocktail> GetCocktails()
+    public List<Cocktail> getCocktails()
     {
         return service.getCocktails();
     }
 
     @GetMapping("/cocktail/{tag}")
 
-            public List<Cocktail> GetCocktailByTag(@PathVariable ("tag") String tag)
+            public List<Cocktail> getCocktailByTag(@PathVariable ("tag") String tag)
     {
         System.out.println(tag);
         return service.getCocktailByTag(tag);
     }
 
     @GetMapping("/{id}")
-    public Optional<Cocktail> GetCoctailById(@PathVariable ("id") Long Id){
+    public Optional<Cocktail> getCocktailById(@PathVariable ("id") Long Id){
     return  service.getCocktail(Id);
     }
 
     @PostMapping("/")
-    public void AddNewCocktail(@RequestBody Cocktail cocktail)
+    public void addNewCocktail(@RequestBody Cocktail cocktail)
     {
         service.addNewCocktail(cocktail);
     }
 
     @DeleteMapping(path="/{id}")
-    public void RemoveCocktail(@PathVariable ("id") Long Id)
+    public void removeCocktail(@PathVariable ("id") Long Id)
     {
         service.deleteCocktail(Id);
     }
-};
+}

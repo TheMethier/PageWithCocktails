@@ -57,7 +57,6 @@ public class CocktailRequestService {
                     .build();
             cocktailRequestRespository.save(cocktailRequest);
         }
-        return ;
     }
 
     public void deleteMyRequest(String username, int id) {
@@ -75,5 +74,15 @@ public class CocktailRequestService {
             }
             }
         }
+    }
+
+    public CocktailRequest getMyRequest(String username, int id) {
+        User user=userRespository.findByUsername(username).orElse(null);
+        if(user!=null)
+        {
+            CocktailRequest cocktailRequest=cocktailRequestRespository.findById(id).orElse(null);
+            return cocktailRequest;
+        }
+        return null;
     }
 }

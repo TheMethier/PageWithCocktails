@@ -1,9 +1,9 @@
 package com.example.verylastapi.classes;
+
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
-import java.util.List;
 import java.util.Set;
 
 @Entity

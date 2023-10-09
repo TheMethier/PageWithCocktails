@@ -44,12 +44,12 @@ public class CocktailService {
     }
 
     public List<Cocktail> getCocktailByTag(String tag) {
-        String formattedTag=new String("%");
+        StringBuilder formattedTag= new StringBuilder("%");
         for (int i=0;i<tag.length();i++){
-            formattedTag+=tag.charAt(i)+"%";
+            formattedTag.append(tag.charAt(i)).append("%");
         }
         System.out.println(formattedTag);
-        return respository.getByTag(formattedTag);
+        return respository.getByTag(formattedTag.toString());
     }
 
 

@@ -17,10 +17,6 @@ public class AdminService {
     }
 
     public void deleteCocktail(Long id) {
-        Cocktail cocktail=cocktailRespository.findById(id).orElse(null);
-        if(cocktail!=null)
-        {
-         cocktailRespository.delete(cocktail);
-        }
+      cocktailRespository.findById(id).ifPresent(cocktailRespository::delete);
     }
 }
