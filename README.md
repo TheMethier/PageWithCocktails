@@ -6,8 +6,8 @@ Web application with recepies to your favorite cocktails. Backend was written in
 + Node v18.12.1<br />
 + Windows 10 <br />
 Database Settings:<br />
-+username: sa<br />
-+password: 12345<br />
++ username: sa<br />
++ password: 12345<br />
 # 2. To Launch:<br />
 1. Create new database "Drink" in Microsoft Server Managment Studio<br />
 2. Run VeryLastApi-0.0.1-SNAPSHOT.jar file<br />
