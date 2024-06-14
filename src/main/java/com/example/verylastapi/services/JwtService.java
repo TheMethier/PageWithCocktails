@@ -32,7 +32,10 @@ public class JwtService {
     }
     public Claims extractClaims(String jwtToken)
     {
-        return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(jwtToken).getBody();
+        return Jwts.parser()
+                .setSigningKey(getSignInKey())
+                .parseClaimsJws(jwtToken)
+                .getBody();
     }
     public String generateToken(UserDetails userDetails)
     {
@@ -49,20 +52,22 @@ public class JwtService {
         Date date= extractClaim(jwtToken,Claims::getExpiration);
         return date.before(new Date());
     }
-    public String generateToken(Map<String, Objects> extraClaims, UserDetails userDetails)
-    {
-        return Jwts.builder()
-                .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*24))//Expiration of token - 1 day
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-                .compact();
-    }
     public Key getSignInKey()
     {
         //todo create encrypted key generator
         byte[] keyBytes= Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails)
+    {
+        Key key = this.getSignInKey();
+        return Jwts.builder()
+                .setClaims(extraClaims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis()+1000*60*24))//Expiration of token - 1 day
+                .signWith(key,SignatureAlgorithm.HS256)
+                .compact();
+    }
+
 }

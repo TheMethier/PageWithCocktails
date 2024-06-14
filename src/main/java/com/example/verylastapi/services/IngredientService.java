@@ -21,12 +21,15 @@ public class IngredientService {
         this.respository1=respository1;
     }
     public List<Ingredient> GetAllIngredients(Long Id) {
+
         return respository.findByCocktailId(Id);
     }
 
 
     public void addNewIngredients(Ingredient ingredients, int id) {
-        Cocktail cocktail=respository1.findAll().get(id);
+        Cocktail cocktail=respository1//refactor
+                .findAll()
+                .get(id);
         ingredients.setCocktail(cocktail);
         respository.save(ingredients);
     }

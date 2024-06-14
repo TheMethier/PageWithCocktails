@@ -22,7 +22,7 @@ public class ManagerService {
     public Cocktail acceptRequest(int id) {
       CocktailRequest cocktailRequest= cocktailRequestRespository.findById(id).get();
         Set<Ingredient> ingredients = new HashSet<>();
-        Cocktail cocktail = new Cocktail(cocktailRequest.getName(), cocktailRequest.getDescription(), cocktailRequest.getImageUrl(), ingredients, cocktailRequest.getPrep(), cocktailRequest.getTag());
+        Cocktail cocktail = new Cocktail(cocktailRequest.getName(), cocktailRequest.getDescription(), cocktailRequest.getImageUrl(),  cocktailRequest.getPrep(), cocktailRequest.getTag());
         int cocktailId = cocktailRespository.findAll().size() + 1;
         cocktailRequest.getIngredients().forEach((x) -> ingredients.add(new Ingredient(cocktailId, x.getName(), x.getQuantity(), x.getUnit())));
         ingredientRespository.saveAll(ingredients);
@@ -35,11 +35,13 @@ public class ManagerService {
         return cocktailRequestRespository.findById(id).get();
     }
 
-    public List<CocktailRequest> getWaitingRequests() {
+    public List<CocktailRequest> getWaitingRequests()
+    {
          return cocktailRequestRespository.findAllWaitingRequests();
     }
     public void deleteCocktailFromRequest(int id) {
-        cocktailRespository.delete(cocktailRespository.findCocktailByName(cocktailRequestRespository.findById(id).get().getName()));
+        cocktailRespository.delete(cocktailRespository
+                .findCocktailByName(cocktailRequestRespository.findById(id).get().getName()));
         cocktailRequestRespository.deleteById(id);
     }
 }

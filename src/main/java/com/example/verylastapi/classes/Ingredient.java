@@ -32,7 +32,10 @@ public Ingredient()
         this.unit=unit;
         this.quantity=quantity;
     }
-
+    public  Ingredient(Cocktail cocktail)
+    {
+        this.cocktail=cocktail;
+    }
     public String getUnit() {
         return unit;
     }

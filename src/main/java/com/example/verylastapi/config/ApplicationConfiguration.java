@@ -70,9 +70,9 @@ public class ApplicationConfiguration {
                     .build();
             tokenRespository.save(adminToken);
             tokenRespository.save(managerToken);
-            ScraperService scraperController= new ScraperService();
-                List<Cocktail> cocktails=scraperController.ScrapMyCocktail();
-                List<Ingredient> ingredients=scraperController.ScrapMyI(cocktails);
+            ScraperService scraperService= new ScraperService();
+                List<Cocktail> cocktails=scraperService.ScrapMyCocktail();
+                List<Ingredient> ingredients=scraperService.ScrapMyI(cocktails);
                 cocktailRespository.saveAll(cocktails);
                 ingredientRespository.saveAll(ingredients);
 

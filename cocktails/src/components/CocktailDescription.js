@@ -7,7 +7,6 @@ import { CardHeader, Grid, Card,CardContent, Accordion,AccordionSummary,Accordio
 import { useLocation, useNavigate } from 'react-router-dom';
 import { dark } from '@mui/material/styles/createPalette';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import axios from 'axios';
 export default function CocktailDescription()
 {
 

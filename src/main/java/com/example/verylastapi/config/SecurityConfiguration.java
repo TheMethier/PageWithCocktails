@@ -24,7 +24,7 @@ private final LogoutHandler logoutHandler;
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
     {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(x->x.requestMatchers("/api/v1/auth/register","/api/v1/auth/authenticate","","/api/v1/indi/**").permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(x->x.requestMatchers("/api/v1/auth/register","/api/v1/auth/authenticate","","/api/v1/indi/**","/api/v1/cocktails/**").permitAll().anyRequest().authenticated())
                 .sessionManagement(x->x.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(x->{

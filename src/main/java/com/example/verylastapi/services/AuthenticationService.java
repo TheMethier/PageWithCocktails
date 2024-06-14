@@ -42,17 +42,20 @@ public class AuthenticationService {
                 .isExpired(false)
                 .build();
         tokenRespository.save(token);
-        return AuthenticationResponse.builder().token(jwt).build();
+        return AuthenticationResponse
+                .builder()
+                .token(jwt)
+                .build();
     }
     public AuthenticationResponse authenticate(AuthenticationRequest request)
     {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword()));
         User user= userRespository.findByUsername(request.getUsername()).orElseThrow();   String jwt=service.generateToken(user);
-       revokeAllUserTokens(user);
-       Token token= Token.builder()
+        revokeAllUserTokens(user);
+        Token token = Token.builder()
                 .tokenType(TokenType.Bearer)
                 .token(jwt)
-       .user(user)
+                .user(user)
                 .isRevoked(false)
                 .isExpired(false)
                 .build();
@@ -62,10 +65,8 @@ public class AuthenticationService {
     public void revokeAllUserTokens(User user)
     {
         List<Token> valid=tokenRespository.findAllValidTokensFromUser(user.getId());
-        if(valid.isEmpty())
-        {return;
-       }
-       valid.forEach(token -> {token.setRevoked(true); token.setExpired(true);});
+        if(valid.isEmpty()) return;
+        valid.forEach(token -> {token.setRevoked(true); token.setExpired(true);});
         tokenRespository.saveAll(valid);
    }
 }

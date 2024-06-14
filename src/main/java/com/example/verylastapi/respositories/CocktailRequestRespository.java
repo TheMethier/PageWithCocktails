@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface CocktailRequestRespository extends JpaRepository<CocktailRequest,Integer> {
-List<CocktailRequest> findAllByUser_Id(int userId);
-@Query("SELECT c from CocktailRequest c where (c.isAccepted=false) and (c.isInspected=false)")
-List<CocktailRequest> findAllWaitingRequests();
+    List<CocktailRequest> findAllByUser_Id(int userId);
+    @Query("SELECT c from CocktailRequest c where (c.isAccepted=false) and (c.isInspected=false)")
+    List<CocktailRequest> findAllWaitingRequests();
 }

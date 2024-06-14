@@ -28,12 +28,11 @@ private final CocktailService service;
     }
 
     @GetMapping("/cocktail/{tag}")
-
             public List<Cocktail> getCocktailByTag(@PathVariable ("tag") String tag)
-    {
-        System.out.println(tag);
-        return service.getCocktailByTag(tag);
-    }
+        {
+            System.out.println(tag);
+            return service.getCocktailByTag(tag);
+        }
 
     @GetMapping("/{id}")
     public Optional<Cocktail> getCocktailById(@PathVariable ("id") Long Id){

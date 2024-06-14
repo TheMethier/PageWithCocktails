@@ -31,16 +31,13 @@ public class CocktailService {
     }
     public void deleteCocktail(Long Id)
     {
-        boolean exist=respository.existsById(Id);
-        if(exist)
+       //to consider:  respository.findById(Id).ifPresent(c->respository.delete(c));
+        if(respository.existsById(Id))
         {
             respository.deleteById(Id);
+            return;
         }
-        else
-        {
-            throw new IllegalStateException("Cocktail doesn't exist");
-
-        }
+        throw new IllegalStateException("Cocktail doesn't exist");
     }
 
     public List<Cocktail> getCocktailByTag(String tag) {

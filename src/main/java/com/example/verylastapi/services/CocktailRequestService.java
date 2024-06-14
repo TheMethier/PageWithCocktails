@@ -27,7 +27,7 @@ public class CocktailRequestService {
         User user=userRespository.findByUsername(username).orElse(null);
         if(user!=null)
         {
-                return cocktailRequestRespository.findAllByUser_Id(user.getId());
+            return cocktailRequestRespository.findAllByUser_Id(user.getId());
         }
         return null;
     }

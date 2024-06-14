@@ -51,7 +51,7 @@ function NavBar({passTagToApp, passSearchToApp}) {
   setSearch(String(event.target.value));
 };
 React.useEffect(()=>{
-  passSearchToApp(search);
+  passSearchToApp(search)
 },[search])
 
 const Search = styled('div')(({ theme }) => ({

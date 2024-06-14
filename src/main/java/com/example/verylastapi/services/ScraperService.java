@@ -12,44 +12,24 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 @Service
 public class ScraperService {
+   private List<Cocktail> list=new ArrayList<>();
+
     public List<Cocktail> ScrapMyCocktail()  {
-        List<Cocktail> list=new ArrayList<>();
         List<String> url=new ArrayList<>();
         try {
             for(int i=1;i<6;i++)
             {
                 String link = "https://mojbar.pl/drinki-z-likieru/page/" + i;
-                Document doc = Jsoup.connect(link).get();
-                Elements images = doc.getElementsByClass("entry-thumb td-thumb-css ");
-                for (Element image : images) {
-                    String urli = image.attr("style").replace("background-image: url(", "").replace(")", "");
-                    url.add(urli);
-                }
-                Elements hrefs = doc.getElementsByClass("entry-title td-module-title");
-                for (Element href :
-                        hrefs) {
-                    String nameo = null;
-                    String description;
-                    Document pages = Jsoup.connect(href.children().attr("href")).get();
-                    Elements titles = pages.getElementsByClass("tdb-title-text");
-                    for (Element tit :
-                            titles) {
-                        nameo = (tit.text().replace(" – Przepis Na Drink", "").replace(" – przepis na drink", "").replace(" – Przepis na Drink", ""));
-                    }
-                    Elements descAndpre = pages.getElementsByClass("tdb-block-inner td-fix-index");
-                    for (Element desc :
-                            descAndpre) {
-                        if (!desc.getElementsByTag("p").isEmpty()) {
-                            description = (Objects.requireNonNull(desc.getElementsByTag("p").first()).text());
-                            Set<Ingredient> Indi = new HashSet<>();
-                            Cocktail cocktail = new Cocktail(nameo, description, "", Indi, "Wszystkie składniki wstrząśnij w szejkerze z lodem i odcedź do schłodzonego szkła.\n", "");
-                            String Url = url.remove(0);
-                            cocktail.setImageUrl(Url);
-                            list.add(cocktail);
-                            System.out.println(cocktail.getName());
-                        }
-
-                    }
+                Document startPage = Jsoup.connect(link).get();
+                extractUrl(startPage,url);
+                Elements cocktailDetails = startPage.getElementsByClass("entry-title td-module-title");
+                for (Element cocktailDetail :
+                        cocktailDetails) {
+                    Cocktail cocktail= new Cocktail();
+                    Document cocktailPage = Jsoup.connect(cocktailDetail.children().attr("href")).get();
+                    extractCocktailName(cocktailPage,cocktail);
+                    extractDescription(cocktailPage,cocktail,url);
+                    list.add(cocktail);
                 }
                 System.out.println("Complete "+i+" !");
                 i=7;
@@ -68,89 +48,128 @@ public class ScraperService {
             for(int a=1;a<6;a++)
             {
                 String link = "https://mojbar.pl/drinki-z-likieru/page/" + a;
-                Document doc = Jsoup.connect(link).get();
-                Elements hrefs = doc.getElementsByClass("entry-title td-module-title");
-                for (Element href :
-                        hrefs) {
-                    System.out.println(href.children().attr("href"));
-                    Document pages = Jsoup.connect(href.children().attr("href")).get();
-                    Elements descAndpre = pages.getElementsByClass("tdb-block-inner td-fix-index");
+                Document startPage = Jsoup.connect(link).get();
+                Elements cocktailDetails = startPage.getElementsByClass("entry-title td-module-title");
+                for (Element cocktail :
+                        cocktailDetails) {
+                    System.out.println(cocktail.children().attr("href"));
+                    Document cocktailPage = Jsoup.connect(cocktail.children().attr("href")).get();
+                    Elements descriptions = cocktailPage.getElementsByClass("tdb-block-inner td-fix-index");
                     i++;
-                    for (Element desc :
-                            descAndpre) {
+                    for (Element description :
+                            descriptions) {
                         float capacity=0;
                         StringBuilder alktag = new StringBuilder();//dodaj asercję na więcej wariantów przepisu w jednym artykule
-                        if (!desc.getElementsByTag("li").isEmpty()) {
-                            for (Element o : desc.getElementsByTag("li")) {
-                                String name = o.text().replaceAll("ml", "").replaceAll("[0-9]+", "").replaceAll("-", "");
-                                String unit;
-                                float quantity = 0;
-                                Pattern pattern = Pattern.compile("[0-9]+");//napraw regex
-                                Matcher matcher = pattern.matcher(o.text());
-                                if (o.text().contains("ml")) {
-                                    while (matcher.find()) {
-                                        quantity = Float.parseFloat(matcher.group());
-                                        capacity+=quantity;
-                                    }
-                                    unit = "ml";
-                                } else if (o.text().contains("dashe")) {
-                                    System.out.println("dashe");
-                                    unit = "dashe";
-                                    while (matcher.find()) {
-                                        quantity = Float.parseFloat(matcher.group());
-                                    }
-                                } else {
-                                    unit = "";
-                                    while (matcher.find()) {
-                                        quantity = Float.parseFloat(matcher.group());
-                                    }
-                                }
-
-                                if (name.contains("ódk") && !alktag.toString().contains("w")) {
-                                    alktag.append("w");
-                                }
-                                if ((name.contains("teq") || name.contains("Teq")) && !alktag.toString().contains("t")) {
-
-                                    alktag.append("t");
-                                }
-                                if (name.contains("gin") && !name.contains("ging") && !alktag.toString().contains("g")) {
-
-                                    alktag.append("g");
-                                }
-                                if (name.contains("wh") && !alktag.toString().contains("h")) {
-                                    alktag.append("h");
-                                }
-                                if (name.contains("rum") && !alktag.toString().contains("r")) {
-                                    alktag.append("r");
-                                }
-                                Ingredient p = new Ingredient(cocktails.get(i), name, quantity, unit);
-                                list.add(p);
+                        if (!description.getElementsByTag("li").isEmpty())
+                        {
+                            for (Element item : description.getElementsByTag("li")) {
+                                Ingredient ingredient = new Ingredient(cocktails.get(i));
+                                capacity=extractIngredient(item,capacity,ingredient);
+                                InsertNameTagIntoAlktag(alktag,ingredient.getName());
+                                list.add(ingredient);
                             }
-                            if(capacity<=50)
-                            {
-                                alktag.append("S");
-                            }
-                            else if(capacity<=120)
-                            {
-                                alktag.append("M");
-                            }
-                            else {
-                                alktag.append("L");
-                            }
+                            InsertCapacityTagIntoAlktag(alktag,capacity);
                             cocktails.get(i).setTag(alktag.toString());
                         }
-
                     }
                 }
                 System.out.println("Complete!");
                 a=7;
             }
-            }
+        }
         catch (Exception e)
         {
             System.out.println(e);
         }
         return list;
     }
+    private void extractCocktailName(Document document, Cocktail cocktail)
+    {
+        Elements titles = document.getElementsByClass("tdb-title-text");
+        for (Element tit :
+                titles) {
+            String cocktailName = tit.text()
+                    .replace(" – Przepis Na Drink", "")
+                    .replace(" – przepis na drink", "")
+                    .replace(" – Przepis na Drink", "");
+            cocktail.setName(cocktailName);
+
+            System.out.println(cocktail.getName());
+        }
     }
+    private void extractUrl(Document document, List<String> url)
+    {
+        Elements images = document.getElementsByClass("entry-thumb td-thumb-css ");
+        for (Element image : images) {
+            String imageUrl = image
+                    .attr("style")
+                    .replace("background-image: url(", "").replace(")", "");
+            url.add(imageUrl);
+        }
+    }
+    private void extractDescription(Document document, Cocktail cocktail, List<String> url )
+    {
+        Elements descriptions = document.getElementsByClass("tdb-block-inner td-fix-index");
+        for (Element desc :
+                descriptions) {
+            if (!desc.getElementsByTag("p").isEmpty())
+            {
+                cocktail.setDescription(Objects.requireNonNull(desc.getElementsByTag("p").first()).text());
+                cocktail.setPrep("Wszystkie składniki wstrząśnij w szejkerze z lodem i odcedź do schłodzonego szkła.\n");
+                cocktail.setImageUrl(url.remove(0));
+            }
+        }
+    }
+
+    private float extractIngredient(Element o, float capacity, Ingredient ingredient)
+    {
+        String name = o.text()
+                .replaceAll("ml", "")
+                .replaceAll("[0-9]+", "")
+                .replaceAll("-", "");
+        ingredient.setName(name);
+        Pattern pattern = Pattern.compile("[0-9]+");//napraw regex
+        Matcher matcher = pattern.matcher(o.text());
+        List<String> units = Arrays.asList("ml","dashe", "dash");
+        ingredient.setUnit("");
+        for(String unit : units) {
+            if (o.text().contains(unit)) {
+                ingredient.setUnit(unit);
+            }
+        }
+        while (matcher.find()) {
+            ingredient.setQuantity(Float.parseFloat(matcher.group()));
+            capacity = (ingredient.getUnit() == "ml") ? capacity + ingredient.getQuantity() : capacity;
+        }
+        return capacity;
+    }
+    private  void InsertNameTagIntoAlktag(StringBuilder alktag, String name) {
+        Map<String, String> matches =new HashMap<>( Map.of(
+                "ódk", "w",
+                "rum", "r",
+                "wh", "h",
+                "teq", "t",
+                "Teq", "t",
+                "gin", "g"
+        ));
+        matches.forEach((x,y)->{
+            if (name.contains(x) && !alktag.toString().contains(y)) {
+                alktag.append(y);
+            }
+        });
+    }
+    private void InsertCapacityTagIntoAlktag(StringBuilder alktag, float capacity) {
+         if(capacity<=50)
+         {
+             alktag.append("S");
+         }
+         else if(capacity<=120)
+         {
+             alktag.append("M");
+         }
+         else {
+             alktag.append("L");
+         }
+    }
+}
 

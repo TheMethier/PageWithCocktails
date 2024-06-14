@@ -12,7 +12,8 @@ public class IngredientRequestService {
     final private CocktailRequestRespository cocktailRequestRespository;
     public void addNewIngredient(IngredientRequest ingredient, int id)
     {
-        cocktailRequestRespository.findById(id).ifPresent((x)-> x.getIngredients().add(ingredient));
-
+        cocktailRequestRespository
+                .findById(id)
+                .ifPresent((x)-> x.getIngredients().add(ingredient));
     }
 }
