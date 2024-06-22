@@ -1,41 +1,37 @@
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import Stack from '@mui/material/Stack';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
-import { AddToDriveSharp, CenterFocusStrong, Description, Height, Route, } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
-import { Grid,Modal,Box, CardHeader, TextField, AppBar } from '@mui/material';
-import Alert from '@mui/material/Alert';
+import { Grid,Modal,Box, CardHeader, TextField } from '@mui/material';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import Typography from '@mui/material/Typography';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { forwardRef } from 'react';
-import { Link, useHref } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import CocktailDescription from './CocktailDescription';
-import SendIcon from '@mui/icons-material/Send';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Slide from '@mui/material/Slide';
-import Filter from './Filter';
+import { confirmAlert } from 'react-confirm-alert';
+
 export default function CocktailCard({tag, search})
-{
-   
+{   
+  const defaultCocktail={
+        name: "",
+        description: "",
+        imageUrl: "",
+        prep: "",
+        tag: ""
+    }
+    const defaultIngredient={
+      name: null,
+      quanity: 0,
+      unit: null
+  }
+    const [errors, setErrors]=useState([]);
     const [loading, setLoading]=useState(true);
     const [cocktails,setCocktails]=useState([]);
     const [name,setName]=useState([]);
     const [desc,setDesc]=useState([]);
     const [url,setUrl]=useState([]);
+    const [cocktail, setCocktail] = useState(defaultCocktail);
     const [prep,SetPrep]=useState([]);
-    const [Ingredients, setIngredients]=useState([]);
+    const [ingredient, setIngredient]=useState([]);
     const [open, setOpen] = useState(false);
     const [open1, setOpen1] = useState(false);
     const [dname,setDname]=useState([]);
@@ -44,9 +40,16 @@ export default function CocktailCard({tag, search})
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const handleClose1 = () => setOpen1(false);
-   
+    const handleChangeCockTail=(name, value)=>{
+      setCocktail({...cocktail,
+      [name]:value});
+  };
+  const handleChangeIndi=(name, value)=>{
+    setIngredient({...ingredient,
+    [name]:value});
+};
     useEffect(()=>{
-       fetch(`http://localhost:8080/api/v1/cocktails/cocktail/${tag}`,{method:'GET'})
+      fetch(`http://localhost:8080/api/v1/cocktails/cocktail/${tag}`,{method:'GET'})
         .then((resp)=>resp.json())
         .then((data)=>{
             setCocktails(data);
@@ -55,14 +58,7 @@ export default function CocktailCard({tag, search})
             setLoading(false);
         });
     },[tag]);
-    useEffect(()=>{
-        fetch(`http://localhost:8080/api/v1/indi/${cocktails.length}`)
-        .then((resp)=>resp.json())
-        .then((data)=>{
-            setIngredients(data);
-        });
 
-    },[]);
 let navigate=useNavigate();
     function GoToDesc(props)
     {
@@ -107,33 +103,80 @@ let navigate=useNavigate();
    }
    const Submit=()=>
    {
-    const text={name: name, description: desc, image_url: url,prep: prep}
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(text)
-        ,type: "no-cors"
+        body: JSON.stringify(cocktail)
     };
-     fetch("http://localhost:8080/api/v1/cocktails/",requestOptions);
-     handleClose();
-     setOpen1(true);
+     fetch("http://localhost:8080/api/v1/cocktails/",requestOptions) .then(response => {
+      if(!response.ok)
+          {
+              console.log(response)
+              response.text().then(text => {
+                  console.log(text)
+                  let p=JSON.parse(text);
+                  setErrors(p.errors);
+              
+              });
+          }
+          else{
+              return response.json();
+          }
+  })
+  .catch(error => {
+      console.log(error)
+  })
+  .then(data => {
+    if(data)
+    {
+      console.log("susces");
+      setErrors([]);
+      handleClose();
+      setOpen1(true);
+}            
+});
+
 
 }
 const SubmitC=()=>{
 
-    console.log(typeof(quanity));
-    const text={quantity: quanity, name: String(dname), unit: String(unit)}
-    console.log(JSON.stringify(text))
+    console.log(JSON.stringify(ingredient))
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(text),
+      body: JSON.stringify(ingredient),
       type: "no-cors"
   };
-  fetch(`http://localhost:8080/api/v1/indi/${cocktails.length}`,requestOptions);
-  setLoading(false);
-  alert(`Dodano składnik: ${text.quantity} ${text.unit} ${text.name}  do drinka !`);
-  setLoading(true);
+  fetch(`http://localhost:8080/api/v1/indi/${cocktails.length}`,requestOptions).then(response => {
+    if(!response.ok)
+        {
+            console.log(response)
+            response.text().then(text => {
+                console.log(text)
+                let p=JSON.parse(text);
+                setErrors(p.errors);
+            
+            });
+        }
+        else{
+            return response.json();
+        }
+})
+.catch(error => {
+    console.log(error)
+})
+.then(data => {
+  if(data)
+  {
+    console.log("susces");
+    setErrors([]);
+    setLoading(false);
+    alert(`Dodano składnik: ${ingredient.quantity} ${ingredient.unit} ${ingredient.name}  do drinka !`);
+    setIngredient(defaultIngredient)
+    setLoading(true);
+}            
+});
+
 }
 const SubmitFinal=()=>{
   setOpen1(false);
@@ -146,7 +189,7 @@ const style = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 300,
-    height:630,
+    height:700,
     bgcolor: 'white',
     border: '2px solid #000',
     boxShadow: 24,
@@ -178,50 +221,59 @@ const style = {
     </CardHeader>
     <CardMedia sx={{backgroundColor:"white"}}>
         <form onSubmit={Submit}>
-    <TextField sx={{bgcolor:"white", color:"black",width:300}}
+    <TextField sx={{bgcolor:"white",
+     color:"black",
+     width:300,
+     marginBottom:   errors?.find((x)=>x.name==="username") ?
+     "1rem": null,
+    }}
           id="outlined-multiline-flexible"
           label="Nazwa"
           multiline          
           maxRows={6}
           name='name'
-          value={name}
-          onChange={handleNameChange}
+          error={!!errors?.find((x)=>x.name=="name")}       
+          helperText={errors?.find((x)=>x.name=="name")? errors?.find((x)=>x.name=="name")?.message: null}
+          onChange={(x)=>handleChangeCockTail("name",x.target.value)}
         />
-            <TextField sx={{bgcolor:"white", color:"black",width:300, marginTop:2}}
+            <TextField sx={{bgcolor:"white", color:"black",width:300, marginTop:2,     marginBottom: errors?.find((x)=>x.name=="name")?.message}}
           id="outlined-multiline-flexible"
           label="URL"
           multiline
           type='text'
           inputMode='text'
           maxRows={6}
-          value={url}
           name='image_url'
-          onChange={handleUrlChange}
-
+          onChange={(x)=>handleChangeCockTail("imageUrl",x.target.value)}
+          error={!!errors?.find((x)=>x.name=="imageUrl")?.message}       
+          helperText={errors?.find((x)=>x.name=="imageUrl")? errors?.find((x)=>x.name=="imageUrl")?.message: null}
         />
-     <TextField sx={{bgcolor:"white", color:"black", width:300, marginTop:2}}
+     <TextField sx={{bgcolor:"white", color:"black", width:300, marginTop:2,     marginBottom: errors?.find((x)=>x.name=="name")?.message
+}}
           id="outlined-multiline-flexible"
           label="Opis"
           multiline
           name='description'
-          value={desc}
           rows={5}
           maxRows={6}
-          onChange={handleDescChange}
-
+          onChange={(x)=>handleChangeCockTail("description",x.target.value)}
+          error={!!errors?.find((x)=>x.name=="description")?.message}       
+          helperText={errors?.find((x)=>x.name=="description")? errors?.find((x)=>x.name=="description")?.message: null}
         />
-        <TextField sx={{bgcolor:"white", color:"black", width:300, marginTop:2}}
+        <TextField sx={{bgcolor:"white", color:"black", width:300, marginTop:2,   
+          marginBottom: errors?.find((x)=>x.name=="name")?.message}}
           id="outlined-multiline-flexible"
           label="Przygotowanie"
           multiline
-          value={prep}
           name='prep'
           rows={5}
           maxRows={6}
-          onChange={handlePrepChange}
+          onChange={(x)=>handleChangeCockTail("prep",x.target.value)}
+          error={!!errors?.find((x)=>x.name=="prep")?.message}       
+          helperText={errors?.find((x)=>x.name=="prep")? errors?.find((x)=>x.name=="prep")?.message: null}
 
         />
-    <Button input type='submit' variant="contained" inputMode='submit'  sx={{width:100, marginTop:7, marginLeft:10}} onClick={(event)=>Submit()} >
+    <Button  variant="contained" inputMode='submit'  sx={{width:100, marginTop:7, marginLeft:10}} onClick={(event)=>Submit()} >
   Dalej<ArrowRightIcon>
 
   </ArrowRightIcon>
@@ -244,30 +296,31 @@ const style = {
 
         <form onSubmit={Submit}>
 
-          <TextField sx={{bgcolor:"white", color:"black",width:100, marginTop:4,marginRight:1}}
+          <TextField sx={{bgcolor:"white", color:"black",width:100, marginTop:4,marginRight:1,
+          marginBottom: errors?.find((x)=>x.name=="quantity")?.message?  "0.5rem": null}}
           id="outlined-multiline-flexible"
           label="Ilość"
-          multiline
           type="number"
-          value={quanity}
           maxRows={6}
-          onChange={handleQChange}
+          onChange={(x)=>handleChangeIndi("quantity",x.target.value)}
+          error={!!errors?.find((x)=>x.name=="quantity")?.message}       
+          helperText={errors?.find((x)=>x.name=="quantity")? errors?.find((x)=>x.name=="quantity")?.message: null}
         />
-         <TextField sx={{bgcolor:"white", color:"black",width:100, marginRight:1,marginTop:4}}
+         <TextField sx={{bgcolor:"white", color:"black",width:100, marginRight:1,marginTop:4,marginBottom: errors?.find((x)=>x.name=="unit")?.message?  "0.5rem": null}}
           id="outlined-multiline-flexible"
           label="Jedonstka"
-          multiline
-          value={unit}
-          onChange={handleUChange}
+          onChange={(x)=>handleChangeIndi("unit",x.target.value)}
           maxRows={6}
+          error={!!errors?.find((x)=>x.name=="unit")?.message}       
+          helperText={errors?.find((x)=>x.name=="unit")? errors?.find((x)=>x.name=="unit")?.message: null}
         />
-         <TextField sx={{bgcolor:"white", color:"black",width:100, marginRight:1,marginTop:4}}
+         <TextField sx={{bgcolor:"white", color:"black",width:100, marginRight:1,marginTop:4,marginBottom: errors?.find((x)=>x.name=="name")?.message ?"0.5rem": null}}
           id="outlined-multiline-flexible"
           label="Nazwa"
-          value={dname}
-          onChange={handleDnChange}
-          multiline
+          onChange={(x)=>handleChangeIndi("name",x.target.value)}
           maxRows={6}
+          error={!!errors?.find((x)=>x.name=="name")?.message}       
+          helperText={errors?.find((x)=>x.name=="name")? errors?.find((x)=>x.name=="name")?.message: null}
         />
     <Button input typ='submit' variant="contained" inputMode='submit'  sx={{width:55,height:55,marginTop:4}} onClick={(event)=>SubmitC()} >
   +

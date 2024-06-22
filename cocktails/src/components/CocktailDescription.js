@@ -1,15 +1,12 @@
-import Stack from '@mui/material/Stack';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { CenterFocusStrong, Description } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 import { CardHeader, Grid, Card,CardContent, Accordion,AccordionSummary,AccordionDetails  } from '@mui/material';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { dark } from '@mui/material/styles/createPalette';
+import { useLocation } from 'react-router-dom';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+
 export default function CocktailDescription()
 {
-
     const [loading, setLoading]=useState(true);
     const local = useLocation();
     const [cocktail,setCocktail]=useState([]);
