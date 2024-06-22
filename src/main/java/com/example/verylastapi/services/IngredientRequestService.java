@@ -1,9 +1,11 @@
 package com.example.verylastapi.services;
 
-import com.example.verylastapi.classes.requests.IngredientRequest;
+import com.example.verylastapi.classes.models.IngredientRequest;
 import com.example.verylastapi.respositories.CocktailRequestRespository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.NoSuchElementException;
 
 
 @Service
@@ -14,6 +16,9 @@ public class IngredientRequestService {
     {
         cocktailRequestRespository
                 .findById(id)
-                .ifPresent((x)-> x.getIngredients().add(ingredient));
+                .ifPresentOrElse(
+                        (x)-> x.getIngredients().add(ingredient),
+                        ()->{throw new NoSuchElementException("Not cocktail not found");}
+                );
     }
 }

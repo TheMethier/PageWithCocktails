@@ -1,6 +1,6 @@
 package com.example.verylastapi.controllers;
 
-import com.example.verylastapi.classes.requests.IngredientRequest;
+import com.example.verylastapi.classes.models.IngredientRequest;
 import com.example.verylastapi.services.IngredientRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @PreAuthorize("hasRole('USER')")
 @RequestMapping("/api/v1/user/indi")
-//add ingredients to recipe
 @RequiredArgsConstructor
 
 public class IngredientRequestController {

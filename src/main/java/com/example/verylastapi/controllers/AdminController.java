@@ -1,7 +1,8 @@
 package com.example.verylastapi.controllers;
 
-import com.example.verylastapi.classes.Cocktail;
-import com.example.verylastapi.services.AdminService;
+import com.example.verylastapi.classes.requests.CocktailAdditionRequest;
+import com.example.verylastapi.services.CocktailService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -11,12 +12,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/admin")
 @RequiredArgsConstructor
 public class AdminController {
-    private final AdminService service;
+    private final CocktailService service;
     @PreAuthorize("hasAuthority('admin::create')")
     @PostMapping()
-    public Cocktail createNewCocktail(@RequestBody Cocktail cocktail)
+    public CocktailAdditionRequest createNewCocktail(@RequestBody @Valid CocktailAdditionRequest cocktail)
     {
-        return service.createNewCocktail(cocktail);
+        service.addNewCocktail(cocktail);
+        return cocktail;
     }
     @PreAuthorize("hasAuthority('admin::delete')")
     @DeleteMapping("/{id}")

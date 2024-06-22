@@ -1,5 +1,6 @@
-package com.example.verylastapi.classes.requests;
+package com.example.verylastapi.classes.models;
 
+import com.example.verylastapi.classes.models.CocktailRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

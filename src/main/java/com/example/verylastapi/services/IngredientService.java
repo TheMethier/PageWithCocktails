@@ -1,13 +1,15 @@
 package com.example.verylastapi.services;
 
-import com.example.verylastapi.classes.Cocktail;
-import com.example.verylastapi.classes.Ingredient;
+import com.example.verylastapi.classes.models.Cocktail;
+import com.example.verylastapi.classes.models.Ingredient;
+import com.example.verylastapi.classes.requests.IngredientAdditionRequest;
 import com.example.verylastapi.respositories.CocktailRespository;
 import com.example.verylastapi.respositories.IngredientRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 
@@ -21,16 +23,19 @@ public class IngredientService {
         this.respository1=respository1;
     }
     public List<Ingredient> GetAllIngredients(Long Id) {
-
         return respository.findByCocktailId(Id);
     }
 
 
-    public void addNewIngredients(Ingredient ingredients, int id) {
-        Cocktail cocktail=respository1//refactor
-                .findAll()
-                .get(id);
-        ingredients.setCocktail(cocktail);
-        respository.save(ingredients);
+    public void addNewIngredient(IngredientAdditionRequest ingredient, Long id) {
+        Cocktail cocktail = respository1.findById(id).get();
+        if(cocktail == null) throw new NoSuchElementException();
+        Ingredient ingredientToDB= Ingredient.builder()
+                .unit(ingredient.getUnit())
+                .name(ingredient.getName())
+                .quantity(ingredient.getQuantity())
+                .cocktail(cocktail)
+                .build();
+        respository.save(ingredientToDB);
     }
 }

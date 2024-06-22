@@ -1,8 +1,13 @@
-package com.example.verylastapi.classes;
+package com.example.verylastapi.classes.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import org.springframework.data.annotation.Id;
 @Entity
+@Builder
+@AllArgsConstructor
+
 @Table(name="Ingredients")
 public class Ingredient {
     @jakarta.persistence.Id

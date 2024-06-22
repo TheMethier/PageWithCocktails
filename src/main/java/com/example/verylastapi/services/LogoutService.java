@@ -1,6 +1,6 @@
 package com.example.verylastapi.services;
 
-import com.example.verylastapi.classes.Token;
+import com.example.verylastapi.classes.models.Token;
 import com.example.verylastapi.respositories.TokenRespository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

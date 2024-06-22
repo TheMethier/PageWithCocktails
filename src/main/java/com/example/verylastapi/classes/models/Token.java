@@ -1,5 +1,6 @@
-package com.example.verylastapi.classes;
+package com.example.verylastapi.classes.models;
 
+import com.example.verylastapi.classes.models.User;
 import com.example.verylastapi.enums.TokenType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

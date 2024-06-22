@@ -1,12 +1,14 @@
-package com.example.verylastapi.classes;
+package com.example.verylastapi.classes.models;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
-import java.util.Set;
-
 @Entity
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name="Cocktails")
 public class Cocktail

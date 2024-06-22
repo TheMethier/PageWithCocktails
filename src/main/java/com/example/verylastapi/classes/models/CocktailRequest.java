@@ -1,7 +1,5 @@
-package com.example.verylastapi.classes.requests;
+package com.example.verylastapi.classes.models;
 
-import com.example.verylastapi.classes.Token;
-import com.example.verylastapi.classes.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

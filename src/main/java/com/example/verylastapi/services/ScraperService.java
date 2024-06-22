@@ -1,12 +1,11 @@
 package com.example.verylastapi.services;
-import com.example.verylastapi.classes.Cocktail;
-import com.example.verylastapi.classes.Ingredient;
+import com.example.verylastapi.classes.models.Cocktail;
+import com.example.verylastapi.classes.models.Ingredient;
 import  org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -73,7 +72,6 @@ public class ScraperService {
                         }
                     }
                 }
-                System.out.println("Complete!");
                 a=7;
             }
         }
@@ -93,8 +91,6 @@ public class ScraperService {
                     .replace(" – przepis na drink", "")
                     .replace(" – Przepis na Drink", "");
             cocktail.setName(cocktailName);
-
-            System.out.println(cocktail.getName());
         }
     }
     private void extractUrl(Document document, List<String> url)
@@ -121,17 +117,21 @@ public class ScraperService {
         }
     }
 
-    private float extractIngredient(Element o, float capacity, Ingredient ingredient)
+    private void extractIngredientName (String text, Ingredient ingredient)
     {
-        String name = o.text()
+        String name = text
                 .replaceAll("ml", "")
                 .replaceAll("[0-9]+", "")
                 .replaceAll("-", "");
         ingredient.setName(name);
+    }
+    private float extractIngredient(Element o, float capacity, Ingredient ingredient)
+    {
+        extractIngredientName(o.text(),ingredient);
+        ingredient.setUnit("");
         Pattern pattern = Pattern.compile("[0-9]+");//napraw regex
         Matcher matcher = pattern.matcher(o.text());
         List<String> units = Arrays.asList("ml","dashe", "dash");
-        ingredient.setUnit("");
         for(String unit : units) {
             if (o.text().contains(unit)) {
                 ingredient.setUnit(unit);

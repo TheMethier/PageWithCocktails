@@ -1,12 +1,10 @@
 package com.example.verylastapi.respositories;
 
-import com.example.verylastapi.classes.Token;
-import com.example.verylastapi.classes.User;
+import com.example.verylastapi.classes.models.Token;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 @Repository

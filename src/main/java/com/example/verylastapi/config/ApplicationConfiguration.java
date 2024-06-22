@@ -1,8 +1,8 @@
 package com.example.verylastapi.config;
-import com.example.verylastapi.classes.Cocktail;
-import com.example.verylastapi.classes.Ingredient;
-import com.example.verylastapi.classes.Token;
-import com.example.verylastapi.classes.User;
+import com.example.verylastapi.classes.models.Cocktail;
+import com.example.verylastapi.classes.models.Ingredient;
+import com.example.verylastapi.classes.models.Token;
+import com.example.verylastapi.classes.models.User;
 import com.example.verylastapi.enums.Role;
 import com.example.verylastapi.enums.TokenType;
 import com.example.verylastapi.respositories.CocktailRespository;
@@ -26,6 +26,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
+
 @RequiredArgsConstructor
 @Configuration
 public class ApplicationConfiguration {
@@ -37,7 +38,8 @@ public class ApplicationConfiguration {
     CommandLineRunner commandLineRunner(CocktailRespository cocktailRespository, IngredientRespository ingredientRespository)
     {
 
-        return args -> {
+        return args ->
+        {
             User admin= User.builder()
                     .email("admin@admin.pl")
                     .username("admin")
@@ -70,12 +72,11 @@ public class ApplicationConfiguration {
                     .build();
             tokenRespository.save(adminToken);
             tokenRespository.save(managerToken);
-            ScraperService scraperService= new ScraperService();
-                List<Cocktail> cocktails=scraperService.ScrapMyCocktail();
-                List<Ingredient> ingredients=scraperService.ScrapMyI(cocktails);
-                cocktailRespository.saveAll(cocktails);
-                ingredientRespository.saveAll(ingredients);
-
+          ///  ScraperService scraperService= new ScraperService();
+          ///  List<Cocktail> cocktails=scraperService.ScrapMyCocktail();
+          ///  List<Ingredient> ingredients=scraperService.ScrapMyI(cocktails);
+          ///  cocktailRespository.saveAll(cocktails);
+          ///  ingredientRespository.saveAll(ingredients);
         };
     }
     @Bean
@@ -93,7 +94,6 @@ public class ApplicationConfiguration {
         DaoAuthenticationProvider authenticationProvider= new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService());
         authenticationProvider.setPasswordEncoder(passwordEncoder());
-
         return authenticationProvider;
     }
     @Bean

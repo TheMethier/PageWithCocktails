@@ -1,43 +1,55 @@
 package com.example.verylastapi.services;
 
-import com.example.verylastapi.classes.Cocktail;
+import com.example.verylastapi.classes.models.Cocktail;
+import com.example.verylastapi.classes.models.Ingredient;
+import com.example.verylastapi.classes.requests.CocktailAdditionRequest;
 import com.example.verylastapi.respositories.CocktailRespository;
+import com.example.verylastapi.respositories.IngredientRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CocktailService {
+
     private final CocktailRespository respository;
+    private final IngredientRespository ingredientRespository;
     @Autowired
-    public CocktailService(CocktailRespository respository)
+    public CocktailService(CocktailRespository respository, IngredientRespository respository1)
     {
         this.respository=respository;
+        this.ingredientRespository =respository1;
     }
 
     public List<Cocktail> getCocktails()
     {
         return respository.findAll();
     }
-    public Optional<Cocktail> getCocktail(Long id)
+    public Cocktail getCocktail(Long id)
     {
-        return respository.findById(id);
+
+        return respository.findById(id).orElse(null);
     }
-    public void addNewCocktail(Cocktail cocktail)
+    public void addNewCocktail(CocktailAdditionRequest cocktail)
     {
-        respository.save(cocktail);
+        Cocktail newCocktail = Cocktail.builder()
+                .name(cocktail.getName())
+                .description(cocktail.getDescription())
+                .prep(cocktail.getPrep())
+                .imageUrl(cocktail.getImageUrl())
+                .tag(cocktail.getTag())
+                .build();
+        respository.save(newCocktail);
     }
-    public void deleteCocktail(Long Id)
+    public void deleteCocktail(Long Id)//to test
     {
-       //to consider:  respository.findById(Id).ifPresent(c->respository.delete(c));
-        if(respository.existsById(Id))
-        {
-            respository.deleteById(Id);
-            return;
-        }
-        throw new IllegalStateException("Cocktail doesn't exist");
+        Cocktail cocktail = respository.findById(Id).orElse(null);
+        if(cocktail==null) throw new IllegalStateException();
+        List<Ingredient> ingredients=ingredientRespository.findByCocktailId(Id);
+        ingredientRespository.deleteAllInBatch(ingredients);
+        respository.delete(cocktail);
+
     }
 
     public List<Cocktail> getCocktailByTag(String tag) {
@@ -45,7 +57,6 @@ public class CocktailService {
         for (int i=0;i<tag.length();i++){
             formattedTag.append(tag.charAt(i)).append("%");
         }
-        System.out.println(formattedTag);
         return respository.getByTag(formattedTag.toString());
     }
 

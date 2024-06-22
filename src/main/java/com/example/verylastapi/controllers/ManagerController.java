@@ -1,14 +1,17 @@
 package com.example.verylastapi.controllers;
 
-import com.example.verylastapi.classes.Cocktail;
-import com.example.verylastapi.classes.requests.CocktailRequest;
+import com.example.verylastapi.classes.models.Cocktail;
+import com.example.verylastapi.classes.models.CocktailRequest;
 import com.example.verylastapi.services.ManagerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @PreAuthorize("hasRole('MANAGER')")
 @RestController
@@ -32,21 +35,28 @@ public class ManagerController {
     }
     @PreAuthorize("hasAuthority('manager::update')")
     @PutMapping("request/{id}")
-    public CocktailRequest rejectRequest(@PathVariable("id") int id)
+    public ResponseEntity rejectRequest(@PathVariable("id") int id)
     {
-       return service.rejectRequest(id);
+        try {
+            CocktailRequest cocktailRequest = service.rejectRequest(id);
+            return ResponseEntity.ok(cocktailRequest);
+        }
+        catch(NoSuchElementException suchElementException)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
     @PreAuthorize("hasAuthority('manager::read')")
     @GetMapping("requests")
-    public List<CocktailRequest> getWaitingRequests()
+    public ResponseEntity getWaitingRequests()
     {
-        return service.getWaitingRequests();
-    }
-    @PreAuthorize("hasAuthority('manager::delete')")
-    @DeleteMapping("requests/{id}")
-    public void deleteCocktailFromRequest(@PathVariable("id") int id)
-    {
-       service.deleteCocktailFromRequest(id);
+        List<CocktailRequest> requests= service.getWaitingRequests();
+        if(requests.isEmpty())
+        {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(service.getWaitingRequests());
     }
 
 

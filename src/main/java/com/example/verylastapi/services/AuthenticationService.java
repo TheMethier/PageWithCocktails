@@ -1,6 +1,7 @@
 package com.example.verylastapi.services;
 
-import com.example.verylastapi.classes.*;
+import com.example.verylastapi.classes.models.Token;
+import com.example.verylastapi.classes.models.User;
 import com.example.verylastapi.classes.requests.AuthenticationRequest;
 import com.example.verylastapi.classes.requests.RegisterRequest;
 import com.example.verylastapi.classes.responses.AuthenticationResponse;
@@ -50,7 +51,8 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request)
     {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword()));
-        User user= userRespository.findByUsername(request.getUsername()).orElseThrow();   String jwt=service.generateToken(user);
+        User user= userRespository.findByUsername(request.getUsername()).orElseThrow();
+        String jwt=service.generateToken(user);
         revokeAllUserTokens(user);
         Token token = Token.builder()
                 .tokenType(TokenType.Bearer)
@@ -60,7 +62,11 @@ public class AuthenticationService {
                 .isExpired(false)
                 .build();
         tokenRespository.save(token);
-        return  AuthenticationResponse.builder().token(jwt).build();
+        return  AuthenticationResponse.builder()
+                    .token(jwt)
+                    .username(user.getUsername())
+                    .userId(user.getId())
+                    .build();
     }
     public void revokeAllUserTokens(User user)
     {
@@ -69,4 +75,5 @@ public class AuthenticationService {
         valid.forEach(token -> {token.setRevoked(true); token.setExpired(true);});
         tokenRespository.saveAll(valid);
    }
+
 }

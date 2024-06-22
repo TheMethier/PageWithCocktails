@@ -1,5 +1,5 @@
 package com.example.verylastapi.respositories;
-import com.example.verylastapi.classes.Cocktail;
+import com.example.verylastapi.classes.models.Cocktail;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import org.springframework.data.jpa.repository.Query;

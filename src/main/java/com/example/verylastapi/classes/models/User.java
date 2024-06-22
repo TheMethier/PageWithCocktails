@@ -1,4 +1,4 @@
-package com.example.verylastapi.classes;
+package com.example.verylastapi.classes.models;
 
 
 import com.example.verylastapi.enums.Role;
