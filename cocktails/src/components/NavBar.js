@@ -5,6 +5,10 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
+import { Link, Outlet } from "react-router-dom";
+import { useEffect } from 'react';
+import LogoutIcon from '@mui/icons-material/Logout';
+import LoginIcon from '@mui/icons-material/Login';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
@@ -17,21 +21,39 @@ import { styled, alpha } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import InputBase from '@mui/material/InputBase';
 import Filter from './Filter';
+
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+
 const pages = ['Drinki', '', ''];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 //correct animation of searchbar 
-function NavBar({passTagToApp, passSearchToApp}) {
+function NavBar({passTagToApp  , passSearchToApp}) {
+  
   const [tag, setTag]=React.useState("");
   const [search, setSearch]= React.useState("");
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [text,setText]=React.useState("");
+  const [user,setUser]=React.useState("");
   const [results,setResults]=React.useState([]);
+  const [state, setState] = React.useState( false);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(true)
+
   const passTagToNav=(data)=>{
     setTag(data);
    passTagToApp(data);
   } 
-  
+ 
+  const handleLogout = (option)=>{
+        if(option == 'Logout')
+          {
+            
+            setIsLoggedIn(false);
+            //localStorage.setItem("isLoggedIn",false)
+          }
+    
+  }
+
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -50,6 +72,7 @@ function NavBar({passTagToApp, passSearchToApp}) {
 {  
   setSearch(String(event.target.value));
 };
+
 React.useEffect(()=>{
   passSearchToApp(search)
 },[search])
@@ -116,7 +139,7 @@ const Search = styled('div')(({ theme }) => ({
               textDecoration: 'none',
             }}
           >
-            Drinki
+            Drinki 
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -198,6 +221,9 @@ const Search = styled('div')(({ theme }) => ({
             />
           </Search>
           <Filter passTagToNav={passTagToNav}/>
+          { isLoggedIn==true ?
+          
+          (
           <Box sx={{ flexGrow: 0, marginLeft:'2%'}}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -222,12 +248,19 @@ const Search = styled('div')(({ theme }) => ({
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+                  <Typography textAlign="center" onClick = {handleLogout(setting)}>{setting}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
-          
+        ):(
+            < a  href="/login">
+            <Box sx={{ flexGrow: 0, marginLeft:'2%'}}>
+            <LoginIcon/>
+            </Box>
+          </a>
+
+          )}
         </Toolbar>
       </Container>
     </AppBar>
